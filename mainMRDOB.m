@@ -73,44 +73,14 @@ Caused by:
 ---> try to manually use clear command before running.
 %}
 %%
-%{
-figure,plot(output_c.time,output_c.signals.values,'y--');
+figure,plot(disturbance.time,disturbance.signals.values,'g--');
 hold on
-stairs(output_fastsampled.time,output_fastsampled.signals.values,'k');
-stairs(output_slowsampled.time,output_slowsampled.signals.values,'b');
-legend('continuous output','fastsampled output','slowsampled output');
-title('System Output');
+stairs(measuredDist.time,measuredDist.signals.values,'k');
+stairs(recoveredDist.time,recoveredDist.signals.values,'b');
+legend('disturbance','measured disturbance','recovered disturbance');
+title('Disturbance recovery');
 
-figure, stairs(measured.time,measured.signals.values);
+figure, stairs(fastSampledOutput.time,fastSampledOutput.signals.values);
 hold on
-plot(distur.time,distur.signals.values); 
-stairs(recovered.time,recovered.signals.values,'k--'); 
-legend('measured disturbance','real disturbance','reconstruted disturbance');
-title('Disturbance Recovery');
-
-figure, stairs(plant_output.time,plant_output.signals.values,'--');
-hold on
-stairs(control.time,control.signals.values/10);
-plot(distur.time,distur.signals.values); 
-plot(output_c.time,output_c.signals.values);
-legend('plant output','control singals/10','disturbance','continuous output');
-title('Plant Output vs Disturbance');
-
-figure,specCale(recovered.signals.values,1/Tu,50000);
-hold on
-specCale(offset.signals.values,1/Tu,50000);
-legend('recovered singals','offset signals');
-title('Spectrul Analysis for signals before and after Q filter');
-
-w = [1 100 1000 10000 20000 30000 40000 disturbance.freq1-20000:disturbance.freq1+20000 disturbance.freq1+10000:10:2*Nyqst*2*pi];
-figure,bode(filterGain*series(Qfilter,Tz),Qfilter,Tss,Tz,w);
-legend('Q*PdL','Q','Tss','Tz');
-title('Bode plot for PdL*Q, Q filter and continuous plant');
-[mag_QT,phase_QT] = bode(filterGain*series(Qfilter,Tz),disturbance.freq1);
-[mag_Q,phase_Q] = bode(Qfilter,disturbance.freq1);
-[mag_Tss,phase_Tss] = bode(Tss,disturbance.freq1);
-[mag_Tz,phase_Tz] = bode(Tz,disturbance.freq1);
-
-%figure,specCale(output.signals.values,1/Ts,50000);
-%title('output spectrum')
-%}
+legend('system output (fasted sampled)');
+title('system output');
