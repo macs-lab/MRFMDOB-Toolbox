@@ -31,7 +31,7 @@ for k = 1:(L-1)
     a = -1*[Apara(2:end)';zeros(L*(m-1)-m+k,1)];
     if rank(Mk)~=length(Mk)
         disp(['The disturbance model is: [',num2str(Apara),']']);
-        error('Mk is nonsingular, can''t find a unique solution!')
+        error(['Mk is nonsingular/badly conditioned at k=',num2str(L),', can''t find a unique solution!'])
     end
     b = Mk\a;
     W(k,:)=b(end-m+1:end)';
