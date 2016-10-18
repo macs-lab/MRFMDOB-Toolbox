@@ -1,17 +1,21 @@
-%Given Ts, L and disturbance frequencys, implement MR-FMDOB techniques to reject
-%disturbance.
+%Given Ts, L and disturbance frequencys, implement MR-FMDOB techniques to reject disturbance.
 %Created by Hui Xiao, 10-13-2015
 
 clear
 %load plant model
 load('Tz.mat')
 load('Tss.mat')
+simTime = 5; %simulation time
+compON = 2.5; %compensation turning on time
+distON = 1; %disturbance turning on time
+noiseAmp = 0.05;
+% Controler parameters
+kp=30;
+ki=0.2;
+kd=0.05;
 %% input arguments
-Tu = input('Tu = ? seconds, default is 2.5e-5: ');
-if isempty(Tu)
-    Tu = 2.5e-5;
-end
-PdL=d2d(Tz,Tu);
+Tu = 0.0004;
+PdL = tf([0.013 0],[1 -1.9819 0.9819],Tu);
 L = input('L = ?, default is 2: ');
 if isempty(L)
     L = 2;
@@ -43,15 +47,22 @@ dist.amp   = zeros(1,distN);
 for i=1:distN
     dist.freq(i)  = freq(i);
     dist.phase(i) = rand*pi;
-    dist.amp(i)   = 0.5+0.5*rand;
+    dist.amp(i)   = (0.5+0.5*rand)/distN;
+end
+
+noiseFlag = input('Do you want to turn on the noise input?(enter 1 for Yes,default is NO)');
+if isempty(noiseFlag)
+    noiseFlag = 0;
+else
+    noiseFlag = 1;
 end
 %% Forward model Youla Q design >> direct approach
 [stdBP,~] = lattice_prod(freq,2,Tu);
 phaF = phaseCompFilter_prod(...
-    freqresp(Tz,freq*2*pi),...
+    freqresp(PdL,freq*2*pi),...
     freq,Tu);
 QFM = stdBP*phaF;
-if 1
+if 0
     xbodeplot(QFM)
 end
 
@@ -73,7 +84,7 @@ Caused by:
 ---> try to manually use clear command before running.
 %}
 %%
-figure,plot(disturbance.time,disturbance.signals.values,'g--');
+figure,plot(disturbance.time,disturbance.signals.values,'--');
 hold on
 stairs(measuredDist.time,measuredDist.signals.values,'k');
 stairs(recoveredDist.time,recoveredDist.signals.values,'b');
@@ -84,3 +95,10 @@ figure, stairs(fastSampledOutput.time,fastSampledOutput.signals.values);
 hold on
 legend('system output (fasted sampled)');
 title('system output');
+
+settlingIndex = round((simTime-1)/Tu);
+figure,specCale(disturbance.signals.values,1/Tu);
+hold on
+specCale(recoveredDist.signals.values,1/Tu);
+specCale(filterOutput.signals.values,1/Tu);
+legend('disturbance','recovered disturbance','filter output');
