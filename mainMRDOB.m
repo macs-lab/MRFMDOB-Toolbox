@@ -3,18 +3,17 @@
 
 clear
 %load plant model
-load('Tz.mat')
-load('Tss.mat')
 simTime = 5; %simulation time
 compON = 2.5; %compensation turning on time
 distON = 1; %disturbance turning on time
 noiseAmp = 0.05;
 % Controler parameters
+Tu = 0.0004;
 kp=30;
 ki=0.2;
 kd=0.05;
+C_baseline = kp + ki*Tu*tf([1 0],[1 -1],Tu) + kd/Tu*tf([1 -1],[1 0],Tu);
 %% input arguments
-Tu = 0.0004;
 PdL = tf([0.013 0],[1 -1.9819 0.9819],Tu);
 L = input('L = ?, default is 2: ');
 if isempty(L)
@@ -65,6 +64,11 @@ QFM = stdBP*phaF;
 if 0
     xbodeplot(QFM)
 end
+C_wFMDOB = (C_baseline+QFM)/(1-PdL*QFM);
+loopShapingCompare(PdL,C_baseline,C_wFMDOB,Tu,'nosave',[],1);
+title 'forward-model Youla: direct optimal approach'
+figure, xbodeplot(1-PdL*QFM)
+title 'forward-model Youla: direct optimal approach'
 
 %% Calculate the pridictor parameters
 PRpara = PRpara_prd(freq,Tu,L);
@@ -89,12 +93,12 @@ hold on
 stairs(measuredDist.time,measuredDist.signals.values,'k');
 stairs(recoveredDist.time,recoveredDist.signals.values,'b');
 legend('disturbance','measured disturbance','recovered disturbance');
-title('Disturbance recovery');
+title(['Disturbance recovery (L=',num2str(L),', distN=',num2str(distN),')']);
 
 figure, stairs(fastSampledOutput.time,fastSampledOutput.signals.values);
 hold on
 legend('system output (fasted sampled)');
-title('system output');
+title(['system output (L=',num2str(L),', distN=',num2str(distN),')']);
 
 settlingIndex = round((simTime-1)/Tu);
 figure,specCale(disturbance.signals.values,1/Tu);
@@ -102,3 +106,4 @@ hold on
 specCale(recoveredDist.signals.values,1/Tu);
 specCale(filterOutput.signals.values,1/Tu);
 legend('disturbance','recovered disturbance','filter output');
+title(['Spectral analysis ((L=',num2str(L),', distN=',num2str(distN),')']);

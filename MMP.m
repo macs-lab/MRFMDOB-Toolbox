@@ -13,6 +13,7 @@ function W = MMP(Apara,L)
 %  W(i,:)=[w_i_0, w_i_1, ..., w_i_m-1], i=1,2,3...,L-1
 %================================================
 %Created by Hui Xiao, 10-12-2016
+dbstop if error
 if Apara(1)~=1
     error('the first coefficient must be 1');
 end

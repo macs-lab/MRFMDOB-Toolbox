@@ -10,11 +10,7 @@ n = length(freqinHz);
 for i = 1:n
     Apara = conv(Apara,[1 -2*cos(2*pi*Tu*freqinHz(i)) 1]);
 end
-try
-    W = MMP(Apara,L);
-catch ME    
-    error(ME.message)
-end
+W = MMP(Apara,L);
 end
 
 
