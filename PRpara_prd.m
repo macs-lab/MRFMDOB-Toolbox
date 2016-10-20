@@ -10,6 +10,7 @@ n = length(freqinHz);
 for i = 1:n
     Apara = conv(Apara,[1 -2*cos(2*pi*Tu*freqinHz(i)) 1]);
 end
+disp(['Apara= [',num2str(Apara),']']);
 W = MMP(Apara,L);
 end
 
