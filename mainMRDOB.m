@@ -21,6 +21,7 @@ if isempty(L)
 end
 Ts = Tu*L;
 Nyquist = 1/Ts/2;
+disp(['Nyquist frequency is: ',num2str(Nyquist)]);
 distN = input('how many freqency components does the disturbance has?(default 1)');
 if isempty(distN)
     distN=1;
@@ -31,7 +32,7 @@ for i=1:distN
         freq(i) = input(['Please enter the ',num2str(i),'th frequency value(Hz), or created a random one: ']);
     catch
         if freq(i) == 0
-            freq(i)= rand*2*Nyquist;
+            freq(i)= (rand*0.9+1.1)*Nyquist;
         end
     end
 end
@@ -60,7 +61,8 @@ end
 phaF = phaseCompFilter_prod(...
     freqresp(PdL,freq*2*pi),...
     freq,Tu);
-QFM = stdBP*phaF;
+QFM = series(stdBP,stdBP)*phaF;
+%QFM = stdBP*phaF;
 if 0
     xbodeplot(QFM)
 end
