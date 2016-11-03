@@ -103,7 +103,7 @@ legend('system output (fasted sampled)');
 title(['system output (L=',num2str(L),', distN=',num2str(distN),')']);
 
 settlingIndex = round((simTime-1)/Tu);
-figure,specCale(disturbance.signals.values,1/Tu);
+figure,specCale(disturbance.signals.values,1/Tu*10);
 hold on
 specCale(recoveredDist.signals.values,1/Tu);
 specCale(filterOutput.signals.values,1/Tu);
