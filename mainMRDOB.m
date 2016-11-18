@@ -8,18 +8,21 @@ compON = 2.5; %compensation turning on time
 distON = 1; %disturbance turning on time
 noiseAmp = 0.05;
 % Controler parameters
-Tu = 0.0004;
+Tu1 = 0.0004;  % plant identifation sampling time
+continousSim = 0.0004/10;
+Ts = 0.005; % Let the sensor sampling speed limits at 200Hz.
 kp=30;
 ki=0.2;
 kd=0.05;
-C_baseline = kp + ki*Tu*tf([1 0],[1 -1],Tu) + kd/Tu*tf([1 -1],[1 0],Tu);
 %% input arguments
-PdL = tf([0.013 0],[1 -1.9819 0.9819],Tu);
-L = input('L = ?, default is 2: ');
+L = input('L = ?, default is 2, maximum is 12: ');
 if isempty(L)
     L = 2;
 end
-Ts = Tu*L;
+Tu = Ts/L;
+if Tu<0.0004
+    error('invalid L')
+end
 Nyquist = 1/Ts/2;
 disp(['Nyquist frequency is: ',num2str(Nyquist)]);
 distN = input('how many freqency components does the disturbance has?(default 1)');
@@ -56,6 +59,13 @@ if isempty(noiseFlag)
 else
     noiseFlag = 1;
 end
+%% model defination
+PdL = tf([0.013 0],[1 -1.9819 0.9819],Tu1); % the linear stage model, with sampling time Ts = 0.0004s
+Pc = d2c(PdL);
+PdL = d2d(PdL,Tu);
+C_baseline = kp + ki*Tu*tf([1 0],[1 -1],Tu) + kd/Tu*tf([1 -1],[1 0],Tu); 
+% ----> PID parameters is good for different Tu? needs to be determined in the future.
+
 %% Forward model Youla Q design >> direct approach
 [stdBP,~] = lattice_prod(freq,2,Tu);
 phaF = phaseCompFilter_prod(...
@@ -73,7 +83,8 @@ figure, xbodeplot(1-PdL*QFM)
 title 'forward-model Youla: direct optimal approach'
 
 %% Calculate the pridictor parameters
-PRpara = PRpara_prd(freq,Tu,L);
+Apara = Apara_prd(freq,Tu);
+PRpara = MMP(Apara,L);
 
 %%
 sim('MRFMDOB.slx')

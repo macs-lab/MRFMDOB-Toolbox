@@ -35,7 +35,6 @@ elseif nargin == 3
 else
     error('number of argument incorrect')
 end
-W = zeros(L-1,p+1);
     function W = W_prd1(Mk_s)
         %calculate W based on inverse and mapping, works for unique
         %solution case
@@ -50,15 +49,22 @@ W = zeros(L-1,p+1);
         %solution case
         W = pinv(Mk_s.B*pinv(Mk_s.A))*(Mk_s.B*pinv(Mk_s.A)*Mk_s.b1-Mk_s.b2);
     end
-if p == m-1  %unique solution case
-    for k = 1:(L-1)
-        [~,Mk_s]=Mk_prd(Apara,L,k,p);
-        W(k,:) = (W_prd1(Mk_s))';
+if(L>1)
+    W = zeros(L-1,p+1);
+    if p == m-1  %unique solution case
+        for k = 1:(L-1)
+            [~,Mk_s]=Mk_prd(Apara,L,k,p);
+            W(k,:) = (W_prd1(Mk_s))';
+        end
+    else
+        for k = 1:(L-1)
+            [~,Mk_s]=Mk_prd(Apara,L,k,p);
+            W(k,:) = (W_prd2(Mk_s))';
+        end
     end
+elseif(L==1)
+    W = 0;
 else
-    for k = 1:(L-1)
-        [~,Mk_s]=Mk_prd(Apara,L,k,p);
-        W(k,:) = (W_prd2(Mk_s))';
-    end
+    error('invalid L')
 end
 end
