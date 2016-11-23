@@ -50,7 +50,8 @@ dist.amp   = zeros(1,distN);
 for i=1:distN
     dist.freq(i)  = freq(i);
     dist.phase(i) = rand*pi;
-    dist.amp(i)   = (0.5+0.5*rand)/distN;
+    dist.amp(i)   = 1/distN;
+    %dist.amp(i)   = (0.5+0.5*rand)/distN;
 end
 
 noiseFlag = input('Do you want to turn on the noise input?(enter 1 for Yes,default is NO)');
@@ -64,7 +65,7 @@ PdL = tf([0.013 0],[1 -1.9819 0.9819],Tu1); % the linear stage model, with sampl
 Pc = d2c(PdL);
 PdL = d2d(PdL,Tu);
 C_baseline = kp + ki*Tu*tf([1 0],[1 -1],Tu) + kd/Tu*tf([1 -1],[1 0],Tu); 
-% ----> PID parameters is good for different Tu? needs to be determined in the future.
+% ----> Is PID parameters still good for different Tu? needs to be determined in the future.
 
 %% Forward model Youla Q design >> direct approach
 [stdBP,~] = lattice_prod(freq,2,Tu);
