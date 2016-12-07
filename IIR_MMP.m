@@ -45,9 +45,6 @@ if(L>1)
         x = Mr\b;
         B(r,:) = x(end-2*n+1:end);
     end
-    Mr
-    b
-    x
 elseif(L==1)
     B = 0;
 else

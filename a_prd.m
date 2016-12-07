@@ -7,5 +7,5 @@ n = length(freqinHz);
 for i = 1:n
     a = conv(a,[1 -2*alpha*cos(2*pi*Ts*freqinHz(i)) alpha^2]);
 end
-disp(['Apara= [',num2str(a),']']);
+disp(['apara= [',num2str(a),']']);
 end

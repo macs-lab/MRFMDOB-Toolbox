@@ -1,8 +1,16 @@
-function TF = tf_W(ParaW,Ts)
-%return the transfer function of MMP
+function TF = tf_W(ParaW,Ts,apara)
+%function TF = tf_W(ParaW,Ts,apara)
+%return the transfer function of MMP.
 %Created by Hui Xiao
 %12/1/2016
-n=length(ParaW);
-den=[1,zeros(1,n-1)];
-TF=tf(ParaW,den,Ts);
+if nargin == 2
+    den = [1,zeros(1,length(ParaW)-1)];
+    TF = tf(ParaW,den,Ts);
+elseif nargin == 3
+    num = [ParaW,0];
+    den = apara;
+    TF = tf(num,den,Ts);
+else
+    error('nargin error')
+end
 end
