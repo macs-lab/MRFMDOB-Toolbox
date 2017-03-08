@@ -2,8 +2,9 @@
 %Created by Hui Xiao, 10-13-2015
 
 clear
+addpath('C:\Users\Hui Xiao\Documents\MATLAB\library');
 %load plant model
-simTime = 5; %simulation time
+simTime = 25; %simulation time
 compON = 2.5; %compensation turning on time
 distON = 1; %disturbance turning on time
 noiseAmp = 0.05;
@@ -35,7 +36,8 @@ for i=1:distN
         freq(i) = input(['Please enter the ',num2str(i),'th frequency value(Hz), or created a random one: ']);
     catch
         if freq(i) == 0
-            freq(i)= (rand*0.9+1.1)*Nyquist;
+            %freq(i)= (rand*0.9+1.1)*Nyquist;   % always beyond Ny
+            freq(i)= (rand*2)*Nyquist;          % between 0 and 2*Ny
         end
     end
 end
@@ -60,6 +62,13 @@ if isempty(noiseFlag)
 else
     noiseFlag = 1;
 end
+
+FIR_ON = input('FIR or IIR predictor? (enter 0 for IIR, default is FIR)');
+if isempty(FIR_ON)
+    FIR_ON = 1;
+else
+    FIR_ON = 0;
+end
 %% model defination
 PdL = tf([0.013 0],[1 -1.9819 0.9819],Tu1); % the linear stage model, with sampling time Ts = 0.0004s
 Pc = d2c(PdL);
@@ -72,8 +81,8 @@ C_baseline = kp + ki*Tu*tf([1 0],[1 -1],Tu) + kd/Tu*tf([1 -1],[1 0],Tu);
 phaF = phaseCompFilter_prod(...
     freqresp(PdL,freq*2*pi),...
     freq,Tu);
-QFM = series(stdBP,stdBP)*phaF;
-%QFM = stdBP*phaF;
+%QFM = series(stdBP,stdBP)*phaF;
+QFM = stdBP*phaF;
 if 0
     xbodeplot(QFM)
 end
@@ -85,7 +94,10 @@ title 'forward-model Youla: direct optimal approach'
 
 %% Calculate the pridictor parameters
 Apara = Apara_prd(freq,Tu);
-PRpara = MMP(Apara,L);
+W = MMP(Apara,L);
+[B,A] = IIR_MMP(freq,L,Ts,0.95);
+FIR = tf_W(W,Ts);
+IIR = tf_W(B,Ts,A);
 
 %%
 sim('MRFMDOB.slx')
@@ -99,8 +111,58 @@ Caused by:
     Error evaluating parameter 'Value' in 'MRFMDOB/Constant'        Error
     using mainMRDOB (line 62)
         Undefined function or variable 'PRpara'.
----> try to manually use clear command before running.
+---> try to manually use 'clear' command before running.
 %}
+
+%% Bode plot
+for i=1:distN
+    if freq(i) >= Nyquist
+        f_b(i) = 2*Nyquist-freq(i);
+        flag_f(i) = 1;        % is aliased frequency band
+    else
+        f_b(i) = freq(i);
+        flag_f(i) = 0;        % is not aliased frequency band
+    end
+end
+w = 0.1:0.1:Nyquist*2*pi;
+[magI,phaseI]=bode(IIR,w);
+[magF,phaseF]=bode(FIR,w);
+mag_dbI = 20*log10(magI);
+mag_dbF = 20*log10(magF);
+figure,subplot(2,1,1)
+plot(w/2/pi,mag_dbI(:));
+hold on
+plot(w/2/pi,mag_dbF(:));
+xlim([0.1 Nyquist]);
+for i=1:distN
+    if flag_f(i)==1
+        vline(f_b(i),'r--');
+    else
+        vline(f_b(i),'k--');
+    end
+end
+xlabel('Frequency (Hz)');
+ylabel('Magnitude (db)');
+title('Bode plot');
+legend('IIR predictor','FIR predictor')
+subplot(2,1,2)
+plot(w/2/pi,phaseI(:))
+hold on
+plot(w/2/pi,phaseF(:));
+xlim([0.1 Nyquist]);
+for i=1:distN
+    if flag_f(i)==1
+        vline(f_b(i),'r--');
+    else
+        vline(f_b(i),'k--');
+    end
+end
+xlabel('Frequency (Hz)');
+ylabel('Phase (deg)');
+figure,bode(IIR);
+hold on
+bode(FIR);
+legend('IIR design','FIR design')
 %%
 figure,plot(disturbance.time,disturbance.signals.values,'--');
 hold on

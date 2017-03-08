@@ -4,7 +4,7 @@ function [B,a] = IIR_MMP(f,L,Ts,alpha)
 % f : a row vector that contains the signal frequency bands, in Hz
 % L : Tu=Ts/L
 % Ts: the original sampling frequency of the signal.
-% make alpha close smaller than 1 and close to 1, usually 0.9 will be good
+% make alpha less than but close to 1, usually 0.9 will be good
 % enough.
 %====================================================
 % Created by Hui Xiao
@@ -50,4 +50,5 @@ elseif(L==1)
 else
     error('invalid L')
 end
+a = a(2:end);
 end

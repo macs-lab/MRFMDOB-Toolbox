@@ -13,7 +13,7 @@ w0 = 2*pi*fc*Ts;
 Omega = 2*pi*bw*Ts;
 k1 = -cos(w0);
 k2 = (1-tan(Omega/2))/(1+tan(Omega/2));
-if 0
+if 1
     z = tf('z',Ts);
     sys_A = (k2 + k1*(1+k2)*z^-1 + z^-2)/(1 + k1*(1+k2)*z^-1 + k2*z^-2);
 else
@@ -32,7 +32,7 @@ H = minreal((1-sys_A)/2);       % complementary BPF
 
 if nargout==0
     figure,
-    bode(G,H)
+    bode(G,H,sys_A)
     fprintf('k1 = %4.2f, k2 = %4.2f\n', k1, k2);
 else
     varargout{1} = G;
