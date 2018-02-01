@@ -44,12 +44,16 @@ plot(w/2/pi,mag_dbI(:));
 hold on
 plot(w/2/pi,mag_dbF(:));
 xlim([0.1 fN]);
-for i=1:n
-    if flag_f(i)==1
-        vline(f_b(i),'r--');
-    else
-        vline(f_b(i),'k--');
+try
+    for i=1:n
+        if flag_f(i)==1
+            vline(f_b(i),'r--');
+        else
+            vline(f_b(i),'k--');
+        end
     end
+catch
+    
 end
 xlabel('Frequency (Hz)');
 ylabel('Magnitude (db)');
@@ -60,12 +64,15 @@ plot(w/2/pi,phaseI(:))
 hold on
 plot(w/2/pi,phaseF(:));
 xlim([0.1 fN]);
-for i=1:n
-    if flag_f(i)==1
-        vline(f_b(i),'r--');
-    else
-        vline(f_b(i),'k--');
+try
+    for i=1:n
+        if flag_f(i)==1
+            vline(f_b(i),'r--');
+        else2
+            vline(f_b(i),'k--');
+        end
     end
+catch
 end
 xlabel('Frequency (Hz)');
 ylabel('Phase (deg)');
