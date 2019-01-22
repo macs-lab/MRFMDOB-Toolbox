@@ -1,19 +1,14 @@
 % varify the IIR MMP and compare it with FIR MMP
 clear
-addpath('C:\Users\Hui Xiao\Documents\MATLAB\library');
+addpath(genpath('functions'));
 %% Define the condition
 
 Ts = 0.0008; %slow sampling time
 L  = 2;
 Tu = Ts/L;   %fast sampling time
 fN = 1/Ts/2; %Nyquist frequency
-f = [0.4*fN 1.3*fN];
-% 7 frequency bands
- f  = [fN*0.3,fN*0.6,fN*1.3,fN*1.6,fN*1.8,fN*0.12,fN*1.5]; 
-% frequency near Nyqyist frequency
- %f = 0.9*fN; 
-% f1+f2 near 2*fN
-%f = [0.41*fN 1.6*fN];  
+% 3 frequency bands
+f  = [fN*0.3,fN*0.5,fN*1.3];  
 n = length(f); % number of frequency bands
 Apara = Apara_prd(f,Tu);
 A1 = Apara(2);
@@ -28,7 +23,7 @@ for i=1:n
     end
 end
 %% FIR MMP
-W = MMP(Apara,L);
+W = FIR_MMP(Apara,L);
 FIR = tf_W(W,Ts);
 %% IIR MMP
 [B,a] = IIR_MMP(f,L,Ts,0.95);
@@ -68,7 +63,7 @@ try
     for i=1:n
         if flag_f(i)==1
             vline(f_b(i),'r--');
-        else2
+        else
             vline(f_b(i),'k--');
         end
     end
@@ -82,10 +77,6 @@ disp(['phase at frequency [',num2str(f),'] is: [',num2str(phase_fI(:)'),']']);
 [mag_fF,phase_fF]=bode(FIR,f*2*pi);
 disp(['magnitude at frequency [',num2str(f),'] is: [',num2str(mag_fI(:)'),']']);
 disp(['phase at frequency [',num2str(f),'] is: [',num2str(phase_fI(:)'),']']);
-figure,bode(IIR);
-hold on
-bode(FIR);
-legend('IIR design','FIR design')
 %% Generate sampled data
 
 phi = pi*rand([1 n]); %phase of disturbance
@@ -219,7 +210,7 @@ for i=1:step
     d_IIR(i) = B*phi_B - a*phi_a;
     error_IIR(i) = d_IIR(i)-dL(i*20+10);
     timeIIR(i) = Ts*i+Tu;
-end
+end 
 
 stairs(timeFIR,d_FIR,'ro');
 stairs(timeIIR,d_IIR,'kx');

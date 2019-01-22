@@ -1,9 +1,9 @@
-function d_est = MMP_est(dL, W)
-%MMP_EST Recover d from sub sampled sequence dL
+function d_est = FIR_MMP_est(dL, W)
+%FIR_MMP_EST Recover d from sub sampled sequence dL
 [L,p] = size(W);
 L = L+1;
 p = p+1;
-d_est = zeros(1, (length(dL)-1)*L + 1);
+d_est = zeros(1, (length(dL)-1)*L);
 for i = 1:length(d_est)
     time = i-1;
     k = mod(time,L);

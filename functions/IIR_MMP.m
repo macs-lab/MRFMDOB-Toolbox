@@ -3,7 +3,7 @@ function [B,a] = IIR_MMP(f,L,Ts,alpha)
 %The IIR version of Multirate Model based predictor.
 % f : a row vector that contains the signal frequency bands, in Hz
 % L : Tu=Ts/L
-% Ts: the original sampling frequency of the signal.
+% Ts: the slow sampling time of the signal.
 % make alpha less than but close to 1, usually 0.9 will be good
 % enough.
 %====================================================

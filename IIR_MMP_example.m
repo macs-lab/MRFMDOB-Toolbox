@@ -16,7 +16,7 @@ f = [1.2 1.67 2.4]; %Hz
 A = [1 0.8 0.3];
 phi = [0.6 0.3 1.4];
 b = [0 0 0];
-noise_amp = 0.05;
+noise_amp = 0;
 [dc,d,dL] = SensorHarmonic(f,A,phi,b,dc_time,d_time,dL_time,noise_amp);
 
 figure,
@@ -27,12 +27,9 @@ stairs(dL_time, dL);
 legend('continus signal','fast sampled true value','slow sampled signal');
 
 %% solve predicting parameters
-Apara = Apara_prd(f,T);
-m = length(Apara)-1;
-p = m -1; % give unique solution.
-W = FIR_MMP(Apara, L, p);
+[B,a] = IIR_MMP(f,L,Tu,0.95);
 %% recover the signal.
-d_est = FIR_MMP_est(dL,W);
+d_est = IIR_MMP_est(dL,B,a);
 %% plot results        
 figure,
 plot(dc_time,dc,'-.');

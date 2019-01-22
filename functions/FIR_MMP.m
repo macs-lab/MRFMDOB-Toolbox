@@ -1,4 +1,4 @@
-function W = MMP(Apara,L,p)
+function W = FIR_MMP(Apara,L,p)
 %function W = MMP(Aparameters,L,p)
 %Implement the procedure to produce the multirate model based predictor.
 %Reference 'Multirate Forward-model Disturbance Observer for Feedback
