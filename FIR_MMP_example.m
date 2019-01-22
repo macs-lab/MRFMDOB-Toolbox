@@ -4,13 +4,13 @@ addpath(genpath('functions'));
 % define parameters
 L = 4;
 % generate time series
-T = 0.1;  % fast sampling period.
-Tu = T*L; % slow sampling period.
+Tsf = 0.1;  % fast sampling period.
+Tss = Tsf*L; % slow sampling period.
 steps = 100;
-end_time = steps*T*L;
-d_time = 0:T:end_time;
-dL_time = 0:Tu:end_time;
-dc_time = 0:T/10:end_time;
+end_time = steps*Tsf*L;
+d_time = 0:Tsf:end_time;
+dL_time = 0:Tss:end_time;
+dc_time = 0:Tsf/10:end_time;
 %% generate signal
 f = [1.2 1.67 2.4]; %Hz
 A = [1 0.8 0.3];
@@ -27,7 +27,7 @@ stairs(dL_time, dL);
 legend('continus signal','fast sampled true value','slow sampled signal');
 
 %% solve predicting parameters
-Apara = Apara_prd(f,T);
+Apara = Apara_prd(f,Tsf);
 m = length(Apara)-1;
 p = m -1; % give unique solution.
 W = FIR_MMP(Apara, L, p);

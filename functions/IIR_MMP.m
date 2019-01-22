@@ -1,18 +1,18 @@
-function [B,a] = IIR_MMP(f,L,Ts,alpha)
+function [B,a] = IIR_MMP(f,L,Tss,alpha)
 %function W = IIR_MMP(f,L,Ts)
 %The IIR version of Multirate Model based predictor.
 % f : a row vector that contains the signal frequency bands, in Hz
 % L : Tu=Ts/L
-% Ts: the slow sampling time of the signal.
+% Tss: the slow sampling time of the signal.
 % make alpha less than but close to 1, usually 0.9 will be good
 % enough.
 %====================================================
 % Created by Hui Xiao
 % 12/3/2016
 dbstop if error
-Tu = Ts/L;
+Tu = Tss/L;
 Apara = Apara_prd(f,Tu);
-a = a_prd(f,Ts,alpha);
+a = a_prd(f,Tss,alpha);
 n = length(f);
 if Apara(1)~=1
     error('the first coefficient must be 1');
