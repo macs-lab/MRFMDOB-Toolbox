@@ -1,2 +1,5 @@
 # simulink related files
 slprj/*
+# recovery files
+*.m~
+*.slx.autosave
