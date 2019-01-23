@@ -6,9 +6,10 @@ function [B,a] = IIR_MMP(f,L,Tss,alpha)
 % Tss: the slow sampling time of the signal.
 % make alpha less than but close to 1, usually 0.9 will be good
 % enough.
-%====================================================
-% Created by Hui Xiao
-% 12/3/2016
+%==========================================================================
+% Copyright (c) 2019 Hui Xiao
+%==========================================================================
+% Created 12/3/2016
 dbstop if error
 Tu = Tss/L;
 Apara = Apara_prd(f,Tu);
@@ -19,17 +20,17 @@ if Apara(1)~=1
 end
 m = length(Apara)-1;
 
-    function Mr = Mr_prd(Apara,n,L,r)
-        Mr = zeros(2*n*L);
-        for i=1:2*n*(L-1)
-            for j=1:length(Apara)
-                Mr(j+i-1,i) = Apara(j);
-            end
-        end
-        for i=2*n*(L-1)+1:2*n*L
-            Mr(r+L*(i-(2*n*(L-1)+1)),i)=1;
+function Mr = Mr_prd(Apara,n,L,r)
+    Mr = zeros(2*n*L);
+    for i=1:2*n*(L-1)
+        for j=1:length(Apara)
+            Mr(j+i-1,i) = Apara(j);
         end
     end
+    for i=2*n*(L-1)+1:2*n*L
+        Mr(r+L*(i-(2*n*(L-1)+1)),i)=1;
+    end
+end
     
 if(L>1)
     B = zeros(L-1,2*n);

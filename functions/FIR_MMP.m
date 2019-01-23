@@ -4,7 +4,7 @@ function W = FIR_MMP(Apara,L,p)
 %Reference 'Multirate Forward-model Disturbance Observer for Feedback
 %Regulation beyond Nyquist Frequency, Xu chen and Hui Xiao, systems &
 %control letters, 2016'
-%===============================================
+%==========================================================================
 %Apara: model coefficients of disturbance. 
 %   Apara=[1 a1 a2 ... an] such that A(z-1)= 1+a1*z-1+...+am*z-n, and 
 %   A(z-1)*d[n]=0
@@ -16,10 +16,12 @@ function W = FIR_MMP(Apara,L,p)
 %     instead.
 %  if p=m-1, unique solution exist.
 %  if p>m-1, infinite solution exist, gives the minimum norm solution.
-%================================================
-%Created by Hui Xiao, 10-12-2016
+%==========================================================================
+%==========================================================================
+% Copyright (c) 2019 Hui Xiao
+%==========================================================================
+%Created 10-12-2016
 %Modified by Hui Xiao, add p argument. 11-3-2016
-dbstop if error
 if Apara(1)~=1
     error('the first coefficient must be 1');
 end
@@ -35,20 +37,22 @@ elseif nargin == 3
 else
     error('number of argument incorrect')
 end
-    function W = W_prd1(Mk_s)
-        %calculate W based on inverse and mapping, works for unique
-        %solution case
-        if rank(Mk_s.B)~=length(Mk_s.B)
-            error('Mk is singular');
-        end
-        f=Mk_s.B\Mk_s.b2;
-        W=-Mk_s.A*f+Mk_s.b1;
+
+function W = W_prd1(Mk_s)
+    %calculate W based on inverse and mapping, works for unique
+    %solution case
+    if rank(Mk_s.B)~=length(Mk_s.B)
+        error('Mk is singular');
     end
-    function W = W_prd2(Mk_s)
-        %calculate W based on pesudoinverse method, works for infinite
-        %solution case
-        W = pinv(Mk_s.B*pinv(Mk_s.A))*(Mk_s.B*pinv(Mk_s.A)*Mk_s.b1-Mk_s.b2);
-    end
+    f=Mk_s.B\Mk_s.b2;
+    W=-Mk_s.A*f+Mk_s.b1;
+end
+function W = W_prd2(Mk_s)
+    %calculate W based on pesudoinverse method, works for infinite
+    %solution case
+    W = pinv(Mk_s.B*pinv(Mk_s.A))*(Mk_s.B*pinv(Mk_s.A)*Mk_s.b1-Mk_s.b2);
+end
+
 if(L>1)
     W = zeros(L-1,p+1);
     if p == m-1  %unique solution case

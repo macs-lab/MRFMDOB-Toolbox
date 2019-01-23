@@ -2,6 +2,9 @@ function a = a_prd(freqinHz,Ts,alpha)
 % function apara = apara_prd(freqinHz,Ts,alpha)
 % freqinHz: given freqency components, freq = [f1 f2 f3 ... fn]
 % Created by Hui Xiao, 12-4-2016
+%==========================================================================
+% Copyright (c) 2019 Hui Xiao
+%==========================================================================
 a = 1;
 n = length(freqinHz);
 for i = 1:n

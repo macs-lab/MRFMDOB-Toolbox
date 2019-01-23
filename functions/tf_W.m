@@ -1,8 +1,10 @@
 function TF = tf_W(ParaW,Ts,apara)
 %function TF = tf_W(ParaW,Ts,apara)
 %return the transfer function of MMP.
-%Created by Hui Xiao
-%12/1/2016
+%==========================================================================
+% Copyright (c) 2019 Hui Xiao
+%==========================================================================
+%Created 12/1/2016
 ParaW = ParaW(1,:);
 if nargin == 2     % FIR model
     den = [1,zeros(1,length(ParaW)-1)];

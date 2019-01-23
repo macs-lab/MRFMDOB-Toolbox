@@ -1,5 +1,8 @@
 function d_est = FIR_MMP_est(dL, W)
 %FIR_MMP_EST Recover d from sub sampled sequence dL
+%==========================================================================
+% Copyright (c) 2019 Hui Xiao
+%==========================================================================
 [L,p] = size(W);
 L = L+1;
 p = p+1;

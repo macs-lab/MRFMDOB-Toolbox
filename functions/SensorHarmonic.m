@@ -1,6 +1,9 @@
 function [dc,d,dL] = SensorHarmonic(f, A, phi, b, dc_time, d_time, dL_time, noise_amp )
 %MULTISIN Generate sensor measurements of harmonic signal.
-%   Detailed explanation goes here
+%==========================================================================
+% Copyright (c) 2019 Hui Xiao
+%==========================================================================
+
 dc = multisin(f,A,phi,b,dc_time);
 d = multisin(f,A,phi,b,d_time);
 dL = multisin(f,A,phi,b,dL_time);

@@ -1,4 +1,10 @@
-% This is an example usage of multi-rate model-based predictor. 
+% An example usage of multi-rate model-based predictor with IIR form.
+%==========================================================================
+% Copyright (c) 2019 Hui Xiao
+%==========================================================================
+% 01-22-2019
+
+%%
 clear
 addpath(genpath('functions'));
 % define parameters

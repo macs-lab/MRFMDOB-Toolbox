@@ -1,6 +1,10 @@
 function d_est = IIR_MMP_est(dL,B,a)
-%IIR_MMP_EST recover a fast sampled d_est from slow sampled dL using
+%IIR_MMP_EST recover a fast sampled d_est from slow sampled dL using 
 %IIR-MMP method.
+%==========================================================================
+% Copyright (c) 2019 Hui Xiao
+%==========================================================================
+% Created 1/22/2019
 L = size(B,1) + 1;
 d_est = zeros(1, length(dL)*L);
 phi_B = zeros(size(B,2), 1);

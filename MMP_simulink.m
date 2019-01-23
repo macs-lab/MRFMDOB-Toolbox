@@ -1,7 +1,11 @@
-% this is an example usage of MMP simulink modual.
-% Created by Hui Xiao 01-22-2019
-clear
+% An example usage of MMP simulink modual.
+%==========================================================================
+% Copyright (c) 2019 Hui Xiao
+%==========================================================================
+% 01-22-2019
+
 %% define slow and fast sampling speed
+clear
 Tss = 0.1;     % slow sampling period
 L = 4;
 Tsf = Tss/L;   % fast smapling period
