@@ -1,4 +1,4 @@
-function W = FIR_MMP(Apara,L,p)
+function W = FIR_MMP(Apara,L,p,predict_step)
 %function W = MMP(Aparameters,L,p)
 %Implement the procedure to produce the multirate model based predictor.
 %Reference 'Multirate Forward-model Disturbance Observer for Feedback
@@ -28,13 +28,15 @@ end
 m = length(Apara)-1;
 if nargin == 2
     p = m-1;
+    predict_step = 0;
 elseif nargin == 3
     if p<m-1
         warning('no solution exist, gives an approximate solution instead')
     elseif p>m-1
         disp('infinite solution exist, gives the minimum norm solution');
     end
-else
+    predict_step = 0;
+elseif nargin ~= 4
     error('number of argument incorrect')
 end
 
@@ -54,14 +56,14 @@ function W = W_prd2(Mk_s)
 end
 
 if(L>1)
-    W = zeros(L-1,p+1);
+    W = zeros(L-1+predict_step,p+1);
     if p == m-1  %unique solution case
-        for k = 1:(L-1)
+        for k = 1:(L-1+predict_step)
             [~,Mk_s]=Mk_prd(Apara,L,k,p);
             W(k,:) = (W_prd1(Mk_s))';
         end
     else
-        for k = 1:(L-1)
+        for k = 1:(L-1+predict_step)
             [~,Mk_s]=Mk_prd(Apara,L,k,p);
             W(k,:) = (W_prd2(Mk_s))';
         end

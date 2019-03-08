@@ -9,7 +9,7 @@ function [Mk,Mk_rdc] = Mk_prd(Apara,L,k,p)
 if Apara(1)~=1
     error('the first coefficient must be 1');
 end
-if ~(k>0 && k<L)
+if ~(k>0)
     error('invalid k');
 end
 m=length(Apara)-1;
